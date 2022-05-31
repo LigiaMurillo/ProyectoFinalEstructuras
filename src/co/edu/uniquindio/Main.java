@@ -1,9 +1,7 @@
 package co.edu.uniquindio;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Scanner;
+import java.lang.reflect.Array;
+import java.util.*;
 
 public class Main {
 
@@ -16,12 +14,23 @@ public class Main {
         inicializarPila(matriz, pila);
 
         ListaSimpleCircularEnlazada<NodoEnlaceSimple> listaJugadores = new ListaSimpleCircularEnlazada<>();
-        inicializarJugadores(listaJugadores);
+        inicializarJugadores(listaJugadores,matriz);
+
+        //asignarMision(matriz , pila , jugador);
 
 
     }
 
-    private static void inicializarJugadores(ListaSimpleCircularEnlazada<NodoEnlaceSimple> listaJugadores) {
+    private static void asignarMision(Grafo<String> matriz, Pila pila, Jugador jugador) {
+
+        if(jugador.isMision() == false){
+
+
+        }
+
+    }
+
+    private static void inicializarJugadores(ListaSimpleCircularEnlazada<NodoEnlaceSimple> listaJugadores, Grafo matriz) {
 
 
         Scanner lectura = new Scanner (System.in);
@@ -34,11 +43,24 @@ public class Main {
             nroJugadores  = lectura.next();
         }
 
-        String nombre = "Maquina";
-        boolean jugadorHumano = false;
-        int semaforosDisponibles;
-        int aux=1;
+        ArrayList<Vertice> posicionesIniciales = new ArrayList<>();
+        posicionesIniciales.add(matriz.buscarVertice("Verde1"));
+        posicionesIniciales.add(matriz.buscarVertice("Amarillo1"));
+        posicionesIniciales.add(matriz.buscarVertice("Naranja1"));
+        posicionesIniciales.add(matriz.buscarVertice("Rojo1"));
+        posicionesIniciales.add(matriz.buscarVertice("Violeta1"));
+        posicionesIniciales.add(matriz.buscarVertice("Azul1"));
 
+        String nombre;
+        boolean jugadorHumano = true;
+        int semaforosDisponibles;
+        Vertice ubicacion;
+        int dado1 = 0;
+        int dado2 = 0;
+        int sumaDados;
+
+
+        //La maquina siempre juega por defcto, por eso se suma 1 siempre
         if(Integer.parseInt(nroJugadores)+1 == 2){
             semaforosDisponibles = 4;
         }else if (Integer.parseInt(nroJugadores)+1 == 3){
@@ -49,18 +71,26 @@ public class Main {
             semaforosDisponibles = 1;
         }
 
-        do {
+        int aux = 0;
+     //   int posicion = posicionesIniciales.size()-aux;
 
-            listaJugadores.add(new NodoEnlaceSimple<Jugador>(new Jugador(nombre, jugadorHumano, semaforosDisponibles)));
-            System.out.println("Ingrese nombre del Jugador: ");
-            nombre = lectura.nextLine();
-            jugadorHumano = true;
-            aux ++;
-
-        }while (aux <= Integer.parseInt(nroJugadores));
+        for(int i = 1 ; i <= Integer.parseInt(nroJugadores) ; i++){
 
 
+            System.out.print("Ingrese nombre del Jugador: ");
+            nombre = lectura.next();
+            ubicacion = posicionesIniciales.get(aux);
+            listaJugadores.add(new Jugador(nombre, true, semaforosDisponibles, ubicacion));
+            aux++;
 
+
+        }
+
+        ubicacion = posicionesIniciales.get(aux);
+        listaJugadores.add(new Jugador("Maquina", false, semaforosDisponibles, ubicacion));
+
+
+      // System.out.println(listaJugadores);
 
 
     }

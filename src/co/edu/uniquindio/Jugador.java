@@ -1,5 +1,7 @@
 package co.edu.uniquindio;
 
+import java.util.Comparator;
+
 public class Jugador {
 
     private String nombre;
@@ -7,6 +9,11 @@ public class Jugador {
     private int semaforosDisponibles;
     private Vertice ubicacion;
     private Jugador siguiente;
+    private int dado1 = lanzarDado();
+    private  int dado2 = lanzarDado();
+    private int sumaDados = dado1 + dado2;
+    private boolean mision = false;
+    private Carta carta;
 
     public Jugador(String nombre) {
         this.nombre = nombre;
@@ -70,5 +77,56 @@ public class Jugador {
             int random = (((int) (Math.random() * 100000.0)) % (6)) + 1;
             return random;
 
+    }
+
+    @Override
+    public String toString() {
+        return "Jugador{" +
+                "nombre='" + nombre + '\'' +
+                ", jugadorHumano=" + jugadorHumano +
+                ", semaforosDisponibles=" + semaforosDisponibles +
+                ", ubicacion=" + ubicacion +
+                ", siguiente=" + siguiente +
+                '}';
+    }
+
+    public int getDado1() {
+        return dado1;
+    }
+
+    public void setDado1(int dado1) {
+        this.dado1 = dado1;
+    }
+
+    public int getDado2() {
+        return dado2;
+    }
+
+    public void setDado2(int dado2) {
+        this.dado2 = dado2;
+    }
+
+    public int getSumaDados() {
+        return sumaDados;
+    }
+
+    public void setSumaDados(int sumaDados) {
+        this.sumaDados = sumaDados;
+    }
+
+    public boolean isMision() {
+        return mision;
+    }
+
+    public void setMision(boolean mision) {
+        this.mision = mision;
+    }
+
+    public Carta getCarta() {
+        return carta;
+    }
+
+    public void setCarta(Carta carta) {
+        this.carta = carta;
     }
 }

@@ -2,24 +2,24 @@ package co.edu.uniquindio;
 
 import java.util.Iterator;
 
-public class ListaSimpleCircularEnlazada<T> implements Iterable<NodoEnlaceSimple<T>> {
+public class ListaSimpleCircularEnlazada<T> implements Iterable<Jugador> {
 
-    private NodoEnlaceSimple<T> cabeza;
+    private Jugador cabeza;
 
     public ListaSimpleCircularEnlazada() {
     }
 
-    public ListaSimpleCircularEnlazada(NodoEnlaceSimple<T> cabeza) {
+    public ListaSimpleCircularEnlazada(Jugador cabeza) {
         this.add(cabeza);
     }
 
-    public void add(NodoEnlaceSimple<T> item) {
+    public void add(Jugador item) {
         if (this.cabeza == null) {
             this.cabeza = item;
             this.cabeza.setSiguiente(this.cabeza);
         }
         else {
-            NodoEnlaceSimple<T> ultimo = obtenerUltimo();
+            Jugador ultimo = obtenerUltimo();
             if (ultimo != null) {
                 ultimo.setSiguiente(item);
                 item.setSiguiente(this.cabeza);
@@ -27,7 +27,7 @@ public class ListaSimpleCircularEnlazada<T> implements Iterable<NodoEnlaceSimple
         }
     }
 
-    public void add(NodoEnlaceSimple<T> item, int index) {
+    public void add(Jugador item, int index) {
         if (this.cabeza == null) {
             add(item);
         }
@@ -41,7 +41,7 @@ public class ListaSimpleCircularEnlazada<T> implements Iterable<NodoEnlaceSimple
                     return;
                 }
                 int i = 0;
-                NodoEnlaceSimple<T> current = this.cabeza;
+                Jugador current = this.cabeza;
                 while(i < lenght) {
                     if (i == index) {
                         item.setSiguiente(current.getSiguiente());
@@ -65,20 +65,25 @@ public class ListaSimpleCircularEnlazada<T> implements Iterable<NodoEnlaceSimple
         }
     }
 
-    public void addAsHead(NodoEnlaceSimple<T> item) {
+    public void addAsHead(Jugador item) {
         if (this.cabeza == null) {
             this.add(item);
         }
         else {
-            NodoEnlaceSimple<T> ultimo = this.obtenerUltimo();
+            Jugador ultimo = this.obtenerUltimo();
             ultimo.setSiguiente(item);
             item.setSiguiente(this.cabeza);
             this.cabeza = item;
         }
     }
 
-    public NodoEnlaceSimple<T> obtenerUltimo() {
-        NodoEnlaceSimple next = this.cabeza;
+    public  Jugador obtenerCabeza(){
+        Jugador next = this.cabeza;
+        return next;
+    }
+
+    public Jugador obtenerUltimo() {
+        Jugador next = this.cabeza;
         while (next != null) {
             if (next.getSiguiente().equals(this.cabeza)) {
                 return next;
@@ -90,20 +95,20 @@ public class ListaSimpleCircularEnlazada<T> implements Iterable<NodoEnlaceSimple
 
     public int lenght() {
         int resultado = 0;
-        for (Iterator<NodoEnlaceSimple<T>> it = this.iterator(); it.hasNext(); ) {
-            NodoEnlaceSimple<T> current = it.next();
+        for (Iterator<Jugador> it = this.iterator(); it.hasNext(); ) {
+            Jugador current = it.next();
             resultado ++;
         }
         return resultado;
     }
 
-    public NodoEnlaceSimple<T> remove(T t) {
+    public Jugador remove(Jugador jugador) {
         if (cabeza == null) {
             return null;
         }
-        NodoEnlaceSimple<T> previous = null;
-        NodoEnlaceSimple<T> current = this.cabeza;
-        NodoEnlaceSimple<T> next = this.cabeza.getSiguiente();
+        Jugador previous = null;
+        Jugador current = this.cabeza;
+        Jugador next = this.cabeza.getSiguiente();
 
         // If the list have just one item.
         if (current == next) {
@@ -112,7 +117,7 @@ public class ListaSimpleCircularEnlazada<T> implements Iterable<NodoEnlaceSimple
         }
 
         while(next != this.cabeza) {
-            if (current.get().equals(t)) {
+            if (current.getNombre().equals(jugador.getNombre())) {
                 previous.setSiguiente(next);
                 current.setSiguiente(null);
                 return current;
@@ -126,21 +131,21 @@ public class ListaSimpleCircularEnlazada<T> implements Iterable<NodoEnlaceSimple
     }
 
     public String toString() {
-        NodoEnlaceSimple<T> next = this.cabeza;
+        Jugador next = this.cabeza;
         String result = "";
         while (next != null) {
-            result += ", " + next.get().toString();
+            result += ", " + next.toString();
             next = next.getSiguiente();
         }
 
         return result;
     }
 
-    public Iterator<NodoEnlaceSimple<T>> iterator() {
+    public Iterator<Jugador> iterator() {
         // return new IteradorNodoEnlaceSimple<>(cabeza);
-        Iterator<NodoEnlaceSimple<T>> it = new Iterator<>() {
+        Iterator<Jugador> it = new Iterator<>() {
 
-            private NodoEnlaceSimple<T> current = cabeza;
+            private Jugador current = cabeza;
             private boolean isHead = true;
 
             @Override
@@ -156,8 +161,8 @@ public class ListaSimpleCircularEnlazada<T> implements Iterable<NodoEnlaceSimple
             }
 
             @Override
-            public NodoEnlaceSimple<T> next() {
-                NodoEnlaceSimple<T> current = this.current;
+            public Jugador next() {
+                Jugador current = this.current;
                 this.current = this.current.getSiguiente();
                 return current;
             }
