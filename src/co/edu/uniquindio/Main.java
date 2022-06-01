@@ -1,7 +1,8 @@
 package co.edu.uniquindio;
 
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Scanner;
 
 public class Main {
 
@@ -77,7 +78,7 @@ public class Main {
         for(int i = 1 ; i <= Integer.parseInt(nroJugadores) ; i++){
 
 
-            System.out.print("Ingrese nombre del Jugador: ");
+            System.out.print("Ingrese nombre del Jugador " + i + ": ");
             nombre = lectura.next();
             ubicacion = posicionesIniciales.get(aux);
             listaJugadores.add(new Jugador(nombre, true, semaforosDisponibles, ubicacion));
