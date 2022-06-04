@@ -79,17 +79,6 @@ public class Jugador {
 
     }
 
-    @Override
-    public String toString() {
-        return "Jugador{" +
-                "nombre='" + nombre + '\'' +
-                ", jugadorHumano=" + jugadorHumano +
-                ", semaforosDisponibles=" + semaforosDisponibles +
-                ", ubicacion=" + ubicacion +
-                ", siguiente=" + siguiente +
-                '}';
-    }
-
     public int getDado1() {
         return dado1;
     }
@@ -129,4 +118,6 @@ public class Jugador {
     public void setCarta(Carta carta) {
         this.carta = carta;
     }
+
+
 }

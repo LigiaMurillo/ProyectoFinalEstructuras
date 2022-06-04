@@ -9,6 +9,14 @@ public class Grafo<T> {
 
     private ArrayList<Vertice> vertices;
 
+    public ArrayList<Vertice> getVertices() {
+        return vertices;
+    }
+
+    public void setVertices(ArrayList<Vertice> vertices) {
+        this.vertices = vertices;
+    }
+
     public Grafo() {
         vertices = new ArrayList<>();
     }

@@ -7,30 +7,108 @@ public class Main {
 
     public static void main(String args[]) {
 
+        //clcular caminos es de distrak
+        //matriz.calcularCaminos(matriz.buscarVertice(jugador.getNombre()));
+
         Grafo<String> matriz = new Grafo<>();
         inicializarMatriz(matriz);
         
         Pila pila = new Pila();
         inicializarPila(matriz, pila);
 
+        System.out.println("Pila inicial");
+        imprimirPila(pila);
+
         ListaSimpleCircularEnlazada<NodoEnlaceSimple> listaJugadores = new ListaSimpleCircularEnlazada<>();
-        inicializarJugadores(listaJugadores,matriz);
+        inicializarJugadores(listaJugadores, matriz, pila);
 
-        //asignarMision(matriz , pila , jugador);
+       for (Jugador jugador: listaJugadores) {
 
 
+           calcularPosiblesMovimientos(matriz , jugador);
+
+
+
+
+        }
+    }
+
+    private static void calcularPosiblesMovimientos(Grafo<String> matriz, Jugador jugador) {
+
+        Scanner lectura = new Scanner (System.in);
+        ArrayList<Vertice> posiblesMovimientos = new ArrayList<>();
+        boolean camino = false;
+        String verticeDestino;
+
+        jugador.getDado1();
+        jugador.getDado2();
+        jugador.getSumaDados();
+
+        System.out.println("Los poibles nodos a los que puede ir son: ");
+
+        for (Vertice vertice: matriz.getVertices() ) {
+
+            camino = matriz.adyacente(jugador.getUbicacion().getNombre(), vertice.getNombre());
+
+            if(camino){
+                posiblesMovimientos.add(vertice);
+                System.out.println(vertice.getNombre());
+            }
+
+        }
+
+        System.out.println("Ingrese el nombre del nodo al que desea ir: ");
+        verticeDestino = lectura.next();
+
+
+    }
+
+    private static void imprimirPila(Pila pila) {
+
+        System.out.println("Lista Cartas");
+        for (Carta carta: pila) {
+            System.out.println(carta.getMision());
+
+        }
     }
 
     private static void asignarMision(Grafo<String> matriz, Pila pila, Jugador jugador) {
 
-        if(jugador.isMision() == false){
+        Scanner lectura = new Scanner (System.in);
+
+        int misionesRechazadas = 0;
+        Carta carta = pila.quitar();
+        boolean aceptarMision = false;
+
+
+        while (misionesRechazadas < 2 ){
+
+            System.out.println("La mision que ha tomado " + jugador.getNombre() + " es: " + carta.getMision().getNombre());
+            System.out.println("¿Acepta la mision?");
+            aceptarMision = Boolean.parseBoolean(lectura.next());
+
+            if(aceptarMision){
+                jugador.setCarta(carta);
+                jugador.setMision(true);
+                break;
+            }
+
+            misionesRechazadas ++;
+            carta = pila.quitar();
 
 
         }
 
+        if( aceptarMision == false){
+
+            jugador.setCarta(carta);
+            jugador.setMision(true);
+            System.out.println("Ya no puede rechazar las misiones, su mision asignada es : " + jugador.getCarta().getMision().getNombre());
+
+        }
     }
 
-    private static void inicializarJugadores(ListaSimpleCircularEnlazada<NodoEnlaceSimple> listaJugadores, Grafo matriz) {
+    private static void inicializarJugadores(ListaSimpleCircularEnlazada<NodoEnlaceSimple> listaJugadores, Grafo matriz, Pila pila) {
 
 
         Scanner lectura = new Scanner (System.in);
@@ -50,6 +128,8 @@ public class Main {
         posicionesIniciales.add(matriz.buscarVertice("Rojo1"));
         posicionesIniciales.add(matriz.buscarVertice("Violeta1"));
         posicionesIniciales.add(matriz.buscarVertice("Azul1"));
+
+        Collections.shuffle(posicionesIniciales);
 
         String nombre;
         boolean jugadorHumano = true;
@@ -76,23 +156,26 @@ public class Main {
 
         for(int i = 1 ; i <= Integer.parseInt(nroJugadores) ; i++){
 
-
-            System.out.print("Ingrese nombre del Jugador: ");
+            System.out.print("Ingrese nombre del Jugador " + i + " : ");
             nombre = lectura.next();
             ubicacion = posicionesIniciales.get(aux);
             listaJugadores.add(new Jugador(nombre, true, semaforosDisponibles, ubicacion));
             aux++;
-
 
         }
 
         ubicacion = posicionesIniciales.get(aux);
         listaJugadores.add(new Jugador("Maquina", false, semaforosDisponibles, ubicacion));
 
+        for (Jugador jugador: listaJugadores){
 
-      // System.out.println(listaJugadores);
+            if (jugador.isMision() == false){
+                asignarMision(matriz , pila , jugador);
+                System.out.println("El jugador " + jugador.getNombre() + ", esta en la posicion " + jugador.getUbicacion().getNombre());
+                System.out.println("y su mision es ir a " + jugador.getCarta().getMision().getNombre());
+            }
 
-
+        }
     }
 
     private static void inicializarPila(Grafo<String> matriz, Pila pila) {
@@ -284,7 +367,7 @@ public class Main {
         matriz.nuevoArco("Violeta4","Centro5",1.0);
         matriz.nuevoArco("Centro5","Violeta4",1.0);
 
-        System.out.println(matriz);
+        //System.out.println(matriz);
 
         //System.out.println(matriz.rutaMasCorta(matriz.buscarVertice("Centro1"), matriz.buscarVertice("Centro3")));
 

@@ -85,7 +85,7 @@ public class ListaSimpleCircularEnlazada<T> implements Iterable<Jugador> {
     public Jugador obtenerUltimo() {
         Jugador next = this.cabeza;
         while (next != null) {
-            if (next.getSiguiente().equals(this.cabeza)) {
+            if (next.getSiguiente() == (this.cabeza)) {
                 return next;
             }
             next = next.getSiguiente();

@@ -1,10 +1,42 @@
 package co.edu.uniquindio;
 
-public class Pila {
+import java.util.Iterator;
+
+public class Pila implements Iterable<Carta>  {
 
     private Carta cabeza;
 
     public Pila() {
+    }
+
+    public Carta getCabeza() {
+        return cabeza;
+    }
+
+    public void setCabeza(Carta cabeza) {
+        this.cabeza = cabeza;
+    }
+
+    public Carta obtenerAnterior(Carta carta) {
+
+        Carta actual = cabeza;
+        if (cabeza == null) {
+            return null;
+        }
+
+        if (carta == this.cabeza){
+            return  null;
+        }
+        else {
+
+
+            while(actual.getSiguiente() != null) {
+                actual = actual.getSiguiente();
+            }
+            //actual.setSiguiente(carta);
+
+        }
+        return actual;
     }
 
     public void insertar(Carta nuevo) {
@@ -35,6 +67,12 @@ public class Pila {
             actual = actual.getSiguiente();
         }
         anterior.setSiguiente(null);
+
+        //codigo añadido
+        actual.setSiguiente(this.cabeza);
+        this.cabeza = actual;
+
+
         return actual;
     }
 
@@ -57,5 +95,40 @@ public class Pila {
         }
         return valor;
     }
+
+    public Iterator<Carta> iterator() {
+        // return new IteradorNodoEnlaceSimple<>(cabeza);
+        Iterator<Carta> it = new Iterator<>() {
+
+            private Carta current = cabeza;
+            private boolean isHead = true;
+
+            @Override
+            public boolean hasNext() {
+                if (this.current == cabeza && isHead) {
+                    isHead = false;
+                    return true;
+                }
+                else if (this.current != null && this.current.getSiguiente() != cabeza) {
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public Carta next() {
+                Carta current = this.current;
+                this.current = this.current.getSiguiente();
+                return current;
+            }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        };
+        return it;
+    }
+
 
 }
