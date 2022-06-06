@@ -142,7 +142,6 @@ public class ListaSimpleCircularEnlazada<T> implements Iterable<Jugador> {
     }
 
     public Iterator<Jugador> iterator() {
-        // return new IteradorNodoEnlaceSimple<>(cabeza);
         Iterator<Jugador> it = new Iterator<>() {
 
             private Jugador current = cabeza;

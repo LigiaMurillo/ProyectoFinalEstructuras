@@ -1,6 +1,5 @@
 package co.edu.uniquindio;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class Main {
@@ -8,7 +7,14 @@ public class Main {
     public static void main(String args[]) {
 
         //clcular caminos es de distrak
-        //matriz.calcularCaminos(matriz.buscarVertice(jugador.getNombre()));
+        boolean finalizarJuego = false ;
+        double catidadPuntosGanarJuego = 0;
+
+        Scanner lectura = new Scanner (System.in);
+
+        System.out.println("Defina la cantidad de puntos para ganar el Juego: ");
+        catidadPuntosGanarJuego = Double.parseDouble(lectura.next());
+
 
         Grafo<String> matriz = new Grafo<>();
         inicializarMatriz(matriz);
@@ -19,48 +25,131 @@ public class Main {
         System.out.println("Pila inicial");
         imprimirPila(pila);
 
-        ListaSimpleCircularEnlazada<NodoEnlaceSimple> listaJugadores = new ListaSimpleCircularEnlazada<>();
+        ListaSimpleCircularEnlazada<Jugador> listaJugadores = new ListaSimpleCircularEnlazada<>();
         inicializarJugadores(listaJugadores, matriz, pila);
 
-       for (Jugador jugador: listaJugadores) {
+        while (finalizarJuego == false) {
 
+            for (Jugador jugador : listaJugadores) {
+                   calcularPosiblesMovimientos(matriz, jugador, catidadPuntosGanarJuego, finalizarJuego, listaJugadores);
 
-           calcularPosiblesMovimientos(matriz , jugador);
+            }
+        }
 
+        for (Jugador jugador : listaJugadores) {
 
-
-
+            if (jugador.getPuntosAcomulados() >= catidadPuntosGanarJuego){
+                   System.out.println("Felicidades el Jugador " + jugador.getNombre() + " a ganado el juego");
+            }
         }
     }
 
-    private static void calcularPosiblesMovimientos(Grafo<String> matriz, Jugador jugador) {
+
+
+    private static void calcularPosiblesMovimientos(Grafo<String> matriz, Jugador jugador, double catidadPuntosGanarJuego, boolean finalizarJuego, ListaSimpleCircularEnlazada<Jugador> listaJugadores) {
 
         Scanner lectura = new Scanner (System.in);
-        ArrayList<Vertice> posiblesMovimientos = new ArrayList<>();
+        ArrayList<Vertice> listaPosiblesMovimientos = new ArrayList<>();
         boolean camino = false;
         String verticeDestino;
+        double pesoArco = 0.0;
+        boolean moverSemaforo = false;
+        int dado1 = lanzarDado();
+        int dado2 = lanzarDado();
+        double sumaDados = dado1 + dado2;
+        boolean nuevoMovimiento = true;
 
-        jugador.getDado1();
-        jugador.getDado2();
-        jugador.getSumaDados();
 
-        System.out.println("Los poibles nodos a los que puede ir son: ");
+        System.out.println("Jugador: " + jugador.getNombre());
+        System.out.println("Esta en la posicion: " + jugador.getUbicacion().getNombre());
+        System.out.println("Resultado dados: " + dado1 + ", " + dado2);
 
-        for (Vertice vertice: matriz.getVertices() ) {
+        if(jugador.getSemaforosDisponibles() == 0){
 
-            camino = matriz.adyacente(jugador.getUbicacion().getNombre(), vertice.getNombre());
+            System.out.println( jugador.getNombre() + ", ¿Deseas Mover un semaforo? ");
+            moverSemaforo = Boolean.parseBoolean(lectura.next());
 
-            if(camino){
-                posiblesMovimientos.add(vertice);
-                System.out.println(vertice.getNombre());
+            if (moverSemaforo){
+                moverSemaforo();
+                if(dado1 > dado2){
+                    sumaDados = dado2;
+                }else if (dado2 > dado1){
+                    sumaDados = dado2;
+                }else {
+                    sumaDados = dado1;
+                }
             }
 
         }
 
-        System.out.println("Ingrese el nombre del nodo al que desea ir: ");
-        verticeDestino = lectura.next();
+        while (nuevoMovimiento == true){
+
+            System.out.println("Los poibles nodos a los que puede ir el juagdor " + jugador.getNombre() + " son: ");
+
+            for (Vertice vertice: matriz.getVertices() ) {
+
+                camino = matriz.adyacente(jugador.getUbicacion().getNombre(), vertice.getNombre());
+
+                //Con este metodo validamos la posicion de los demas jugadores y no dejamos que el sistema
+                for (Jugador jugadorAux:listaJugadores) {
+                    if (jugadorAux.getUbicacion() == vertice){
+                        camino = false;
+                    }
+                }
+
+                if(camino){
+
+                    pesoArco = matriz.pesoEntreArcos(jugador.getUbicacion().getNombre(), vertice.getNombre());
+                   if (sumaDados >= pesoArco){
+                        listaPosiblesMovimientos.add(vertice);
+                        System.out.println(vertice.getNombre() + " -> " + pesoArco);
+
+                   }
+                }
+            }
+
+            if(listaPosiblesMovimientos.size() == 0){
+                System.out.println("Lo sentimos no puedes hacer movimientos");
+                nuevoMovimiento = false;
+                break;
+            }
 
 
+
+            System.out.println("Ingrese el nombre del nodo al que desea ir: ");
+            verticeDestino = lectura.next();
+            Vertice vertice = matriz.buscarVertice(verticeDestino);
+
+            while (vertice == null || listaPosiblesMovimientos.contains(vertice) == false){
+                System.out.println("Valor ingresado no es valido, por favor verifique la informacion");
+                System.out.println("Ingrese el nombre del nodo al que desea ir: ");
+                verticeDestino = lectura.next();
+                vertice = matriz.buscarVertice(verticeDestino);
+            }
+
+            if(listaPosiblesMovimientos.contains(vertice)){
+
+                jugador.setUbicacion(vertice);
+                sumaDados = sumaDados - pesoArco;
+            }
+
+            if (jugador.getUbicacion() == jugador.getCarta().getMision()){
+                jugador.setPuntosAcomulados(jugador.getCarta().getPuntos());
+                if (jugador.getPuntosAcomulados() == catidadPuntosGanarJuego || jugador.getPuntosAcomulados() > catidadPuntosGanarJuego) {
+                    finalizarJuego = true;
+                }
+            }
+
+            listaPosiblesMovimientos.clear();
+        }
+
+        dado1 = 0;
+        dado2 = 0;
+    }
+
+    private static void moverSemaforo() {
+
+        System.out.println("moviendo semaforo...");
     }
 
     private static void imprimirPila(Pila pila) {
@@ -71,6 +160,13 @@ public class Main {
 
         }
     }
+
+    public static int lanzarDado(){
+        int random = (((int) (Math.random() * 100000.0)) % (6)) + 1;
+        return random;
+
+    }
+
 
     private static void asignarMision(Grafo<String> matriz, Pila pila, Jugador jugador) {
 
@@ -104,11 +200,12 @@ public class Main {
             jugador.setCarta(carta);
             jugador.setMision(true);
             System.out.println("Ya no puede rechazar las misiones, su mision asignada es : " + jugador.getCarta().getMision().getNombre());
+            System.out.println();
 
         }
     }
 
-    private static void inicializarJugadores(ListaSimpleCircularEnlazada<NodoEnlaceSimple> listaJugadores, Grafo matriz, Pila pila) {
+    private static void inicializarJugadores(ListaSimpleCircularEnlazada<Jugador> listaJugadores, Grafo matriz, Pila pila) {
 
 
         Scanner lectura = new Scanner (System.in);
@@ -131,10 +228,11 @@ public class Main {
 
         Collections.shuffle(posicionesIniciales);
 
+        int aux = 0;
         String nombre;
         boolean jugadorHumano = true;
         int semaforosDisponibles;
-        Vertice ubicacion;
+        Vertice ubicacion = posicionesIniciales.get(aux);
         int dado1 = 0;
         int dado2 = 0;
         int sumaDados;
@@ -151,21 +249,25 @@ public class Main {
             semaforosDisponibles = 1;
         }
 
-        int aux = 0;
-     //   int posicion = posicionesIniciales.size()-aux;
 
         for(int i = 1 ; i <= Integer.parseInt(nroJugadores) ; i++){
 
             System.out.print("Ingrese nombre del Jugador " + i + " : ");
             nombre = lectura.next();
             ubicacion = posicionesIniciales.get(aux);
-            listaJugadores.add(new Jugador(nombre, true, semaforosDisponibles, ubicacion));
+            listaJugadores.add(new Jugador(nombre, jugadorHumano, semaforosDisponibles, ubicacion));
+            System.out.println("El jugador " + nombre + ", esta en la posicion " + ubicacion + " y tiene disponible " + semaforosDisponibles + " semaforos");
             aux++;
 
         }
 
-        ubicacion = posicionesIniciales.get(aux);
+        aux++;
         listaJugadores.add(new Jugador("Maquina", false, semaforosDisponibles, ubicacion));
+
+       /* for (Jugador jugador: listaJugadores){
+                System.out.println("El jugador " + jugador.getNombre());
+
+        }*/
 
         for (Jugador jugador: listaJugadores){
 
@@ -173,6 +275,7 @@ public class Main {
                 asignarMision(matriz , pila , jugador);
                 System.out.println("El jugador " + jugador.getNombre() + ", esta en la posicion " + jugador.getUbicacion().getNombre());
                 System.out.println("y su mision es ir a " + jugador.getCarta().getMision().getNombre());
+                System.out.println();
             }
 
         }

@@ -5,30 +5,29 @@ import java.util.Comparator;
 public class Jugador {
 
     private String nombre;
-    private boolean jugadorHumano = true;
+    private boolean jugadorHumano;
     private int semaforosDisponibles;
     private Vertice ubicacion;
     private Jugador siguiente;
-    private int dado1 = lanzarDado();
-    private  int dado2 = lanzarDado();
-    private int sumaDados = dado1 + dado2;
     private boolean mision = false;
     private Carta carta;
+    private double puntosAcomulados = 0;
+
 
     public Jugador(String nombre) {
         this.nombre = nombre;
     }
 
-    public Jugador(String nombre, boolean maquina, int semaforosDisponibles) {
+    public Jugador(String nombre, boolean esHumano, int semaforosDisponibles) {
         this.nombre = nombre;
-        this.jugadorHumano = maquina;
+        this.jugadorHumano = esHumano;
         this.semaforosDisponibles = semaforosDisponibles;
     }
 
 
-    public Jugador(String nombre, boolean maquina, int semaforosDisponibles, Vertice ubicacion) {
+    public Jugador(String nombre, boolean esHumano, int semaforosDisponibles, Vertice ubicacion) {
         this.nombre = nombre;
-        this.jugadorHumano = maquina;
+        this.jugadorHumano = esHumano;
         this.semaforosDisponibles = semaforosDisponibles;
         this.ubicacion = ubicacion;
     }
@@ -73,36 +72,6 @@ public class Jugador {
         this.siguiente = siguiente;
     }
 
-    public int lanzarDado(){
-            int random = (((int) (Math.random() * 100000.0)) % (6)) + 1;
-            return random;
-
-    }
-
-    public int getDado1() {
-        return dado1;
-    }
-
-    public void setDado1(int dado1) {
-        this.dado1 = dado1;
-    }
-
-    public int getDado2() {
-        return dado2;
-    }
-
-    public void setDado2(int dado2) {
-        this.dado2 = dado2;
-    }
-
-    public int getSumaDados() {
-        return sumaDados;
-    }
-
-    public void setSumaDados(int sumaDados) {
-        this.sumaDados = sumaDados;
-    }
-
     public boolean isMision() {
         return mision;
     }
@@ -119,5 +88,11 @@ public class Jugador {
         this.carta = carta;
     }
 
+    public double getPuntosAcomulados() {
+        return puntosAcomulados;
+    }
 
+    public void setPuntosAcomulados(double puntosAcomulados) {
+        this.puntosAcomulados = puntosAcomulados;
+    }
 }
