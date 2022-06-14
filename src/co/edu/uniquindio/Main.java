@@ -1,6 +1,12 @@
 package co.edu.uniquindio;
 
+<<<<<<< HEAD
 import java.util.*;
+=======
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Scanner;
+>>>>>>> f1c29503fedcc99133532a2c74a7e823f3f30489
 
 public class Main {
 
@@ -310,7 +316,12 @@ public class Main {
 
         for(int i = 1 ; i <= Integer.parseInt(nroJugadores) ; i++){
 
+<<<<<<< HEAD
             System.out.print("Ingrese nombre del Jugador " + i + " : ");
+=======
+
+            System.out.print("Ingrese nombre del Jugador " + i + ": ");
+>>>>>>> f1c29503fedcc99133532a2c74a7e823f3f30489
             nombre = lectura.next();
             ubicacion = posicionesIniciales.get(aux);
             listaJugadores.add(new Jugador(nombre, jugadorHumano, semaforosDisponibles, ubicacion));
