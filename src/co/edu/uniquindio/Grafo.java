@@ -75,6 +75,22 @@ public class Grafo<T> {
         return false;
     }
 
+    public Arco bucarArco(String origen, String destino) {
+
+        Vertice<T> verticeOrigen = buscarVertice(origen);
+
+        if (verticeOrigen != null) {
+            Vertice<T> verticeDestino = verticeOrigen.buscarDestino(destino);
+            for (Arco arco: verticeOrigen.getArcos()) {
+                if (arco.getDestino().equals(verticeDestino)) {
+                    return arco;
+                }
+            }
+        }
+
+        return new Arco(null);
+    }
+
     public double pesoEntreArcos(String origen, String destino) {
         Vertice<T> verticeOrigen = buscarVertice(origen);
 
@@ -125,6 +141,8 @@ public class Grafo<T> {
 
         return matriz;
     }
+
+
 
     public String toString() {
         String vertices = "V = {";

@@ -31,7 +31,7 @@ public class Main {
         while (finalizarJuego == false) {
 
             for (Jugador jugador : listaJugadores) {
-                   calcularPosiblesMovimientos(matriz, jugador, catidadPuntosGanarJuego, finalizarJuego, listaJugadores);
+                   calcularPosiblesMovimientos(matriz, jugador, catidadPuntosGanarJuego, finalizarJuego, listaJugadores, pila);
 
             }
         }
@@ -46,7 +46,7 @@ public class Main {
 
 
 
-    private static void calcularPosiblesMovimientos(Grafo<String> matriz, Jugador jugador, double catidadPuntosGanarJuego, boolean finalizarJuego, ListaSimpleCircularEnlazada<Jugador> listaJugadores) {
+    private static void calcularPosiblesMovimientos(Grafo<String> matriz, Jugador jugador, double catidadPuntosGanarJuego, boolean finalizarJuego, ListaSimpleCircularEnlazada<Jugador> listaJugadores, Pila pila) {
 
         Scanner lectura = new Scanner (System.in);
         ArrayList<Vertice> listaPosiblesMovimientos = new ArrayList<>();
@@ -64,13 +64,12 @@ public class Main {
         System.out.println("Esta en la posicion: " + jugador.getUbicacion().getNombre());
         System.out.println("Resultado dados: " + dado1 + ", " + dado2);
 
-        if(jugador.getSemaforosDisponibles() == 0){
 
-            System.out.println( jugador.getNombre() + ", ¿Deseas Mover un semaforo? ");
-            moverSemaforo = Boolean.parseBoolean(lectura.next());
+        System.out.println( jugador.getNombre() + ", ¿Deseas Mover o asignar un semaforo? ");
+        moverSemaforo = Boolean.parseBoolean(lectura.next());
 
             if (moverSemaforo){
-                moverSemaforo();
+                moverSemaforo(matriz , jugador);
                 if(dado1 > dado2){
                     sumaDados = dado2;
                 }else if (dado2 > dado1){
@@ -80,7 +79,8 @@ public class Main {
                 }
             }
 
-        }
+
+        //System.out.println(matriz.obtenerMatrizPesos());
 
         while (nuevoMovimiento == true){
 
@@ -135,7 +135,10 @@ public class Main {
 
             if (jugador.getUbicacion() == jugador.getCarta().getMision()){
                 jugador.setPuntosAcomulados(jugador.getCarta().getPuntos());
-                if (jugador.getPuntosAcomulados() == catidadPuntosGanarJuego || jugador.getPuntosAcomulados() > catidadPuntosGanarJuego) {
+                jugador.setMision(false);
+                jugador.setCarta(null);
+                asignarMision(matriz, pila , jugador);
+                if (jugador.getPuntosAcomulados() >= catidadPuntosGanarJuego) {
                     finalizarJuego = true;
                 }
             }
@@ -147,9 +150,64 @@ public class Main {
         dado2 = 0;
     }
 
-    private static void moverSemaforo() {
+    //Metodo para poner semaforos en un vertice
 
-        System.out.println("moviendo semaforo...");
+    private static void moverSemaforo(Grafo<String> matriz, Jugador jugador) {
+
+        System.out.println("Poner o modificar semaforo: ");
+
+        Arco arco = null , arco2 = null;
+
+        if (jugador.getSemaforosDisponibles() == 0) {
+
+            System.out.println("No tienes semaforos disponibles, ingresa los datos para buscar el semaforo que quieres cambiar: ");
+
+            arco = capturarDatosArco(matriz);
+
+            while (arco.getPesoModificado() == false){
+                System.out.println("Por favor verifique la informacion!");
+                arco2 = capturarDatosArco(matriz);
+            }
+
+            System.out.println("Ingrese la ubicacion donde quiere cambiar el semaforo:");
+            arco2 = capturarDatosArco(matriz);
+
+            while (arco2 == null){
+                System.out.println("Por favor verifique la informacion!");
+                arco2 = capturarDatosArco(matriz);
+            }
+            arco.setPeso(arco.getPeso()-2);
+            arco.setPesoModificado(false);
+            arco2.setPeso(arco2.getPeso()+2);
+            arco2.setPesoModificado(true);
+
+
+        } else if (jugador.getSemaforosDisponibles() > 0) {
+
+            while (arco == null ){
+                System.out.println("Por favor verifique la informacion!");
+                arco = capturarDatosArco(matriz);
+            }
+
+            arco.setPeso(arco.getPeso()+2);
+            arco.setPesoModificado(true);
+            jugador.setSemaforosDisponibles(jugador.getSemaforosDisponibles()-1);
+
+        }
+
+        //System.out.println("moviendo semaforo...");
+    }
+
+    private static Arco capturarDatosArco(Grafo matriz) {
+
+        Arco arcoAux;
+        Scanner lectura = new Scanner(System.in);
+        System.out.println("Ingrese el origen");
+        String semaforoOrigen = lectura.next();
+        System.out.println("Ingrese el destino");
+        String semaforoDestino = lectura.next();
+
+        return matriz.bucarArco(semaforoOrigen, semaforoDestino);
     }
 
     private static void imprimirPila(Pila pila) {
